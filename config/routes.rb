@@ -5,15 +5,15 @@ Rails.application.routes.draw do
     registration: "signup"
   },
   controllers: {
-    sessions: "users/sessions",
-    registrations: "users/registrations"
+    sessions: "api/auth/sessions",       # Points to the sessions controller in the api/auth folder
+    registrations: "api/auth/registrations"  # Points to the registrations controller in the api/auth folder
   }
 
-  resources :accounts do
-    resources :transactions, only: [ :create, :index ]
+  namespace :api do
+    resources :accounts
+    resources :transactions, only: [ :index, :create ]
+    post "/deposit", to: "transactions#deposit"
+    post "/withdraw", to: "transactions#withdraw"
+    post "/transfer", to: "transactions#transfer"
   end
-
-  post "accounts/:id/deposit", to: "transactions#deposit"
-  post "accounts/:id/withdraw", to: "transactions#withdraw"
-  post "accounts/transfer", to: "transactions#transfer"
 end

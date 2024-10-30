@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_10_28_161541) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_30_162623) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "accounts", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "account_name"
-    t.decimal "balance"
+    t.decimal "balance", precision: 15, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_accounts_on_user_id"
@@ -25,12 +25,23 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_28_161541) do
 
   create_table "transactions", force: :cascade do |t|
     t.bigint "account_id", null: false
-    t.decimal "amount"
+    t.decimal "amount", precision: 15, scale: 2
     t.string "transaction_type"
     t.datetime "date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_transactions_on_account_id"
+  end
+
+  create_table "transfers", force: :cascade do |t|
+    t.bigint "from_account_id", null: false
+    t.bigint "to_account_id", null: false
+    t.decimal "amount", precision: 15, scale: 2
+    t.datetime "date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["from_account_id"], name: "index_transfers_on_from_account_id"
+    t.index ["to_account_id"], name: "index_transfers_on_to_account_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -51,4 +62,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_10_28_161541) do
 
   add_foreign_key "accounts", "users"
   add_foreign_key "transactions", "accounts"
+  add_foreign_key "transfers", "accounts", column: "from_account_id"
+  add_foreign_key "transfers", "accounts", column: "to_account_id"
 end
