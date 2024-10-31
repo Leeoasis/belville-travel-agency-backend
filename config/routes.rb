@@ -5,15 +5,17 @@ Rails.application.routes.draw do
     registration: "signup"
   },
   controllers: {
-    sessions: "api/auth/sessions",       # Points to the sessions controller in the api/auth folder
-    registrations: "api/auth/registrations"  # Points to the registrations controller in the api/auth folder
+    sessions: "api/auth/sessions",
+    registrations: "api/auth/registrations"
   }
-
   namespace :api do
     resources :accounts
-    resources :transactions, only: [ :index, :create ]
-    post "/deposit", to: "transactions#deposit"
-    post "/withdraw", to: "transactions#withdraw"
-    post "/transfer", to: "transactions#transfer"
+    resources :transactions, only: [ :index, :create ] do
+      collection do
+        post :deposit  # This would call the deposit method
+        post :withdraw # This would call the withdraw method
+      end
+    end
+    resources :transfers, only: [ :create ] # Assuming transfer has its own endpoint
   end
 end

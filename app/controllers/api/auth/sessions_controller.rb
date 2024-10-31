@@ -8,11 +8,17 @@ class Api::Auth::SessionsController < Devise::SessionsController
 
   # Custom response for successful login
   def respond_with(resource, _opts = {})
+    # Generate the JWT token
+    token = Warden::JWTAuth::UserEncoder.new.call(resource, :user, nil)
+
     render json: {
       status: {
         code: 200,
         message: "Logged in successfully.",
-        data: { user: UserSerializer.new(resource).serializable_hash[:data][:attributes] }
+        data: {
+          user: UserSerializer.new(resource).serializable_hash[:data][:attributes],
+          token: token # Include the token in the response
+        }
       }
     }, status: :ok
   end
