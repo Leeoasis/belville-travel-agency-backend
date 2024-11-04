@@ -1,5 +1,4 @@
 class Api::TransfersController < ApplicationController
-  include RackSessionsFix
   before_action :authenticate_user!
 
   def create

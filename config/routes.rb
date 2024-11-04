@@ -1,21 +1,13 @@
 Rails.application.routes.draw do
-  devise_for :users, path: "", path_names: {
-    sign_in: "login",
-    sign_out: "logout",
-    registration: "signup"
-  },
-  controllers: {
-    sessions: "api/auth/sessions",
-    registrations: "api/auth/registrations"
-  }
+  mount_devise_token_auth_for "User", at: "auth"
   namespace :api do
     resources :accounts
     resources :transactions, only: [ :index, :create ] do
       collection do
-        post :deposit  # This would call the deposit method
-        post :withdraw # This would call the withdraw method
+        post :deposit
+        post :withdraw
       end
     end
-    resources :transfers, only: [ :create ] # Assuming transfer has its own endpoint
+    resources :transfers, only: [ :create ]
   end
 end

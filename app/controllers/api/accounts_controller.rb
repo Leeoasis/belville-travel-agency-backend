@@ -1,5 +1,4 @@
 class Api::AccountsController < ApplicationController
-  include RackSessionsFix
   before_action :authenticate_user!
 
   def index

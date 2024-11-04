@@ -1,5 +1,4 @@
 class Api::TransactionsController < ApplicationController
-  include RackSessionsFix
   before_action :authenticate_user!
 
   # Fetch all transactions
