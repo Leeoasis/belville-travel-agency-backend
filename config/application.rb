@@ -40,5 +40,10 @@ module BelvilleTravelAgencyBackend
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # Add Warden middleware for DeviseTokenAuth
+    config.middleware.use Warden::Manager do |manager|
+      manager.default_strategies :token
+    end
   end
 end
