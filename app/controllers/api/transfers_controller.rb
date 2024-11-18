@@ -1,4 +1,14 @@
 class Api::TransfersController < ApplicationController
+  def index
+    transfers = Transfer.includes(:from_account, :to_account).all
+    transfers_with_account_names = transfers.map do |transfer|
+      transfer.attributes.merge(
+        from_account_name: transfer.from_account.account_name,
+        to_account_name: transfer.to_account.account_name
+      )
+    end
+    render json: transfers_with_account_names
+  end
   # Create a new transfer
   def create
     from_account = Account.find_by(account_name: params[:from_account_name])
