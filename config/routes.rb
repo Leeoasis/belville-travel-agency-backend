@@ -8,6 +8,6 @@ Rails.application.routes.draw do
         post :withdraw
       end
     end
-    resources :transfers, only: [ :create ]
+    resources :transfers, only: [ :index, :create ]
   end
 end

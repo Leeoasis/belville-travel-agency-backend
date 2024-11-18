@@ -9,10 +9,16 @@ class Api::TransactionsController < ApplicationController
       end
       transactions = account.transactions
     else
-      transactions = Transaction.all
+      transactions = Transaction.includes(:account).all
     end
-    render json: transactions
+
+    transactions_with_account_name = transactions.map do |transaction|
+      transaction.attributes.merge(account_name: transaction.account.account_name)
+    end
+
+    render json: transactions_with_account_name
   end
+
 
   # Create a new transaction (general action, could be used for deposits and withdrawals)
   def create

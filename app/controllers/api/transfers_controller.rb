@@ -1,12 +1,12 @@
 class Api::TransfersController < ApplicationController
-  before_action :authenticate_user!
-
+  # Create a new transfer
   def create
-    from_account = current_user.accounts.find_by(id: params[:from_account_id])
-    to_account = current_user.accounts.find_by(id: params[:to_account_id])
+    from_account = Account.find_by(account_name: params[:from_account_name])
+    to_account = Account.find_by(account_name: params[:to_account_name])
 
-    unless from_account && to_account
-      render json: { error: "Account not found" }, status: :not_found and return
+    if from_account.nil? || to_account.nil?
+      render json: { error: "One or both accounts not found" }, status: :not_found
+      return
     end
 
     if from_account.balance >= params[:amount].to_d
@@ -14,9 +14,9 @@ class Api::TransfersController < ApplicationController
         from_account.update!(balance: from_account.balance - params[:amount].to_d)
         to_account.update!(balance: to_account.balance + params[:amount].to_d)
 
-        Transfer.create!(from_account: from_account, to_account: to_account, amount: params[:amount], date: Time.current)
+        transfer = Transfer.create!(from_account: from_account, to_account: to_account, amount: params[:amount], date: Time.current)
+        render json: { message: "Transfer successful", transfer: transfer }, status: :ok
       end
-      render json: { message: "Transfer successful" }, status: :ok
     else
       render json: { error: "Insufficient balance" }, status: :unprocessable_entity
     end
