@@ -24,8 +24,20 @@ class Api::AccountsController < ApplicationController
 
   def destroy
     account = Account.find(params[:id])
-    account.destroy
-    head :no_content
+    if account.destroy
+      render json: { message: "Account deleted successfully" }, status: :ok
+    else
+      render json: { error: "Failed to delete account" }, status: :unprocessable_entity
+    end
+  end
+
+  def update
+    account = Account.find(params[:id])
+    if account.update(account_params)
+      render json: account, status: :ok
+    else
+      render json: { error: "Failed to update account" }, status: :unprocessable_entity
+    end
   end
 
   private

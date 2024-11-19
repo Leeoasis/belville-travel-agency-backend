@@ -1,5 +1,7 @@
 class Account < ApplicationRecord
-  # belongs_to :user
+  # Ensure the correct association with dependent: :destroy to delete transfers when an account is deleted
+  has_many :transfers_from, class_name: "Transfer", foreign_key: "from_account_id", dependent: :destroy
+  has_many :transfers_to, class_name: "Transfer", foreign_key: "to_account_id", dependent: :destroy
   has_many :transactions, dependent: :destroy
 
   validates :account_name, presence: true

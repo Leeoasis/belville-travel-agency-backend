@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_19_151827) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_19_160510) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -67,7 +67,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_19_151827) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true
   end
 
-  add_foreign_key "transactions", "accounts"
-  add_foreign_key "transfers", "accounts", column: "from_account_id"
-  add_foreign_key "transfers", "accounts", column: "to_account_id"
+  add_foreign_key "transactions", "accounts", on_delete: :cascade
+  add_foreign_key "transfers", "accounts", column: "from_account_id", on_delete: :cascade
+  add_foreign_key "transfers", "accounts", column: "to_account_id", on_delete: :cascade
 end
