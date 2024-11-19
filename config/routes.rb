@@ -10,5 +10,5 @@ Rails.application.routes.draw do
     end
     resources :transfers, only: [ :index, :create ]
   end
-  root to: proc { [ 200, { "Content-Type" => "application/json" }, [ '{"message":"API is running"}' ] ] }
+  match "*path", to: "application#not_found", via: :all
 end
