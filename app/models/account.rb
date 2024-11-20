@@ -6,4 +6,5 @@ class Account < ApplicationRecord
 
   validates :account_name, presence: true
   validates :balance, numericality: { greater_than_or_equal_to: 0 }
+  validates :payment_type, presence: true, inclusion: { in: %w[cash card] }
 end

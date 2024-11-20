@@ -42,6 +42,6 @@ class Api::AccountsController < ApplicationController
 
   private
   def account_params
-    params.permit(:account_name, :balance, :phone_number, :book_number)
+    params.permit(:account_name, :balance, :phone_number, :book_number, :payment_type)
   end
 end
