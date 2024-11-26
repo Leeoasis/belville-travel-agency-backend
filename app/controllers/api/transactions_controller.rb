@@ -50,11 +50,16 @@ class Api::TransactionsController < ApplicationController
       return
     end
 
-    transaction = Transaction.new(transaction_params.merge(transaction_type: "deposit"))
+    amount = BigDecimal(params[:amount])
+    if amount <= 0
+      render json: { error: "Invalid deposit amount" }, status: :unprocessable_entity
+      return
+    end
+
+    transaction = Transaction.new(transaction_params.merge(transaction_type: "deposit", amount: amount))
     transaction.account = account
 
     if transaction.save
-      account.update!(balance: account.balance + transaction.amount)
       render json: { message: "Deposit created successfully" }, status: :created
     else
       render json: transaction.errors, status: :unprocessable_entity
@@ -74,18 +79,24 @@ class Api::TransactionsController < ApplicationController
       return
     end
 
-    transaction = Transaction.new(transaction_params.merge(transaction_type: "withdraw"))
+    amount = BigDecimal(params[:amount])
+    if amount <= 0
+      render json: { error: "Invalid withdrawal amount" }, status: :unprocessable_entity
+      return
+    end
+
+    if account.balance < amount
+      render json: { error: "Insufficient balance" }, status: :unprocessable_entity
+      return
+    end
+
+    transaction = Transaction.new(transaction_params.merge(transaction_type: "withdraw", amount: amount))
     transaction.account = account
 
-    if account.balance >= transaction.amount
-      if transaction.save
-        account.update!(balance: account.balance - transaction.amount)
-        render json: { message: "Withdrawal created successfully" }, status: :created
-      else
-        render json: transaction.errors, status: :unprocessable_entity
-      end
+    if transaction.save
+      render json: { message: "Withdrawal created successfully" }, status: :created
     else
-      render json: { error: "Insufficient balance" }, status: :unprocessable_entity
+      render json: transaction.errors, status: :unprocessable_entity
     end
   end
 

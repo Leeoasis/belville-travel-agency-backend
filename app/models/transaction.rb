@@ -11,9 +11,9 @@ class Transaction < ApplicationRecord
 
   def update_account_balance
     if transaction_type == "deposit"
-      account.update(balance: account.balance + amount)
+      account.update!(balance: account.balance + amount)
     elsif transaction_type == "withdraw"
-      account.update(balance: account.balance - amount)
+      account.update!(balance: account.balance - amount)
     end
   end
 
