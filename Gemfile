@@ -11,7 +11,6 @@ gem "puma", ">= 5.0"
 # Use Redis adapter to run Action Cable in production
 # gem "redis", ">= 4.0.1"
 gem "devise"
-gem "stringio", "~> 3.1.1"
 gem "devise_token_auth"
 gem "jsonapi-serializer"
 gem "cancancan"
