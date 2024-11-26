@@ -25,17 +25,20 @@ class Api::TransfersController < ApplicationController
     end
 
     # Handle insufficient balance
-    if from_account.balance < params[:amount].to_d
+    amount = BigDecimal(params[:amount])
+    if from_account.balance < amount
       render json: { error: "Insufficient balance" }, status: :unprocessable_entity
       return
     end
 
     # Perform transfer in a transaction
     ActiveRecord::Base.transaction do
-      from_account.update!(balance: from_account.balance - params[:amount].to_d)
-      to_account.update!(balance: to_account.balance + params[:amount].to_d)
+      from_account.update!(balance: from_account.balance - amount)
+      to_account.update!(balance: to_account.balance + amount)
 
       transfer = Transfer.new(transfer_params)
+      transfer.amount = amount
+      transfer.save!  # Save the transfer to the database
 
       render json: { message: "Transfer successful", transfer: transfer }, status: :ok
     end

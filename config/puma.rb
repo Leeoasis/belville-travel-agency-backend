@@ -11,7 +11,7 @@ port ENV.fetch("PORT", 3001)
 environment ENV.fetch("RAILS_ENV", "production")
 
 # Number of Puma workers (default: 2)
-workers ENV.fetch("WEB_CONCURRENCY", 2)
+# workers ENV.fetch("WEB_CONCURRENCY", 2)
 
 # Preload the application before forking workers for performance
 preload_app!
