@@ -84,28 +84,6 @@ class Api::TransactionsController < ApplicationController
     end
   end
 
-  # Make a transfer
-  def transfer
-    from_account = Account.find_by(account_name: params[:from_account_name])
-    to_account = Account.find_by(account_name: params[:to_account_name])
-    if from_account.nil? || to_account.nil?
-      render json: { error: "One or both accounts not found" }, status: :not_found
-      return
-    end
-
-    ActiveRecord::Base.transaction do
-      withdrawal = Transaction.new(transaction_params.except(:account_name).merge(transaction_type: "withdraw", account: from_account))
-      deposit = Transaction.new(transaction_params.except(:account_name).merge(transaction_type: "deposit", account: to_account))
-
-      if withdrawal.save && deposit.save
-        render json: { message: "Transfer completed successfully" }, status: :created
-      else
-        render json: { errors: withdrawal.errors.full_messages + deposit.errors.full_messages }, status: :unprocessable_entity
-        raise ActiveRecord::Rollback
-      end
-    end
-  end
-
   private
 
   # Strong parameters for transactions
